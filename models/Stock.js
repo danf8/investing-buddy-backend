@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const stockSchema = new Schema ({
-  name: String,
-  price: String
+  symbol: String,
+  date: String,
+  stockPrice: String,
+  numberOfShares: String
 });
 
 module.exports = mongoose.model('Stock', stockSchema);

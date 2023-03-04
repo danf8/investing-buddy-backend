@@ -1,8 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const fetch = require("node-fetch");
 const Stock = require('../models/Stock.js')
 
+const url = "https://financialmodelingprep.com/api/v3/enterprise-values/AAPL?limit=40&apikey=8fbf4bf9dfd624c270732442735a23ff";
+const stockData = [];
+
+const getStocks = async () => {
+ const response = await fetch(url);
+ const data = await response.json();
+ stockData.push(data);
+}
+getStocks();
+
+
+
 router.get("/", (req, res) => {
+  //console.log(stockData[0]);
+  //consumeApi(stockData[0]);
   res.send('hello investing world');
 });
 
