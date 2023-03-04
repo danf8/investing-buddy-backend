@@ -16,8 +16,8 @@ router.get("/stocks", async (req, res) => {
 //create
 router.post("/stocks", async (req, res) => {
   try {
-    console.log(req.body)
-    res.status(201).json(await Stock.create(req.body));
+    await console.log(req.body);
+    res.status(200).json(await Stock.create(req.body));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }

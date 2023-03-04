@@ -18,7 +18,7 @@ const { PORT = 3001, DATABASE_URL } = process.env;
 
 const stocksRouter = require('./controllers/Stocks');
 
-app.use(stocksRouter);
+
 ///////////////////////////////
 // Database Connection
 ////////////////////////////////
@@ -35,6 +35,7 @@ mongoose.connection
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(stocksRouter);
 ///////////////////////////////
 // Mount Routes
 ////////////////////////////////
