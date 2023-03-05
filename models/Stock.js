@@ -9,6 +9,7 @@ const stockSchema = new Schema ({
   marketCap: Number,
   eps: Number,
   pe: Number,
+  comments: Array
 });
 
 module.exports = mongoose.model('Stock', stockSchema);
