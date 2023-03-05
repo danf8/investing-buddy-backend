@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const fetch = require("node-fetch");
 const Stock = require('../models/Stock.js')
+const {API_KEY} = process.env;
 
-const url = "https://financialmodelingprep.com/api/v3/enterprise-values/AAPL?limit=40&apikey=8fbf4bf9dfd624c270732442735a23ff";
+const url = "https://financialmodelingprep.com/api/v3/enterprise-values/AAPL?limit=40&apikey=" + API_KEY;
 const stockData = [];
 
 const getStocks = async () => {
@@ -12,12 +13,14 @@ const getStocks = async () => {
  stockData.push(data);
 }
 getStocks();
+console.log(stockData)
+
 
 
 
 router.get("/", (req, res) => {
-  //console.log(stockData[0]);
-  //consumeApi(stockData[0]);
+  getStocks();
+  console.log(stockData)
   res.send('hello investing world');
 });
 
