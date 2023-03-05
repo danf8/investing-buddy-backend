@@ -5,7 +5,8 @@ const stockSchema = new Schema ({
   symbol: String,
   date: String,
   stockPrice: String,
-  numberOfShares: String
+  numberOfShares: String,
+  comments: Array
 });
 
 module.exports = mongoose.model('Stock', stockSchema);

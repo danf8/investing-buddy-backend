@@ -47,11 +47,19 @@ router.delete("/stocks/:id", async (req, res) => {
 })
 
 // Update Route
-router.put("/stock/:id", async (req, res) => {
+router.put("/stocks/:id", async (req, res) => {
   try {
     res.status(200).json(
       await Stock.findByIdAndUpdate(req.params.id, req.body, { new: true })
     );
+  } catch (error) {
+    res.status(400).json({ message: "something went wrong" });
+  }
+});
+
+router.get("/stocks/:id", async (req, res) => {
+  try {
+    res.status(200).json(await Stock.findById(req.params.id));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
