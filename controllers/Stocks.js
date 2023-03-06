@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const fetch = require("node-fetch");
 const Stock = require('../models/Stock.js')
+const {API_KEY} = process.env;
 
-const url = "https://financialmodelingprep.com/api/v3/enterprise-values/AAPL?limit=40&apikey=8fbf4bf9dfd624c270732442735a23ff";
-// const url ="https://financialmodelingprep.com/api/v3/quote/SPY,QQQ,DIA,AAPL,META,GOOG,AMZN,MCD,KO,VZ,MSFT,BA%20?apikey=8fbf4bf9dfd624c270732442735a23ff";
+const url = "https://financialmodelingprep.com/api/v3/enterprise-values/AAPL?limit=40&apikey=" + API_KEY;
 const stockData = [];
 
 const getStocks = async () => {
@@ -13,12 +13,11 @@ const getStocks = async () => {
  stockData.push(data);
 }
 getStocks();
-
-
+console.log(stockData)
 
 router.get("/", (req, res) => {
-  //console.log(stockData[0]);
-  //consumeApi(stockData[0]);
+  getStocks();
+  const allStocks = stockData[0];
   res.send('hello investing world');
 });
 
@@ -53,7 +52,7 @@ router.put("/stocks/:id", async (req, res) => {
   console.log(req.body)
   try {
     res.status(200).json(
-      await Stock.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      await Stock.findByIdAndUpdate(req.params.id, {$push: {comments: req.body.comments}})
     );
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
