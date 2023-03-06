@@ -15,12 +15,9 @@ const getStocks = async () => {
 getStocks();
 console.log(stockData)
 
-
-
-
 router.get("/", (req, res) => {
   getStocks();
-  console.log(stockData)
+  const allStocks = stockData[0];
   res.send('hello investing world');
 });
 
@@ -53,7 +50,7 @@ router.delete("/stocks/:id", async (req, res) => {
 router.put("/stocks/:id", async (req, res) => {
   try {
     res.status(200).json(
-      await Stock.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      await Stock.findByIdAndUpdate(req.params.id, {$push: {comments: req.body.comments}})
     );
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
