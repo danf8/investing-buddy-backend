@@ -4,6 +4,7 @@ const fetch = require("node-fetch");
 const Stock = require('../models/Stock.js')
 
 const url = "https://financialmodelingprep.com/api/v3/enterprise-values/AAPL?limit=40&apikey=8fbf4bf9dfd624c270732442735a23ff";
+// const url ="https://financialmodelingprep.com/api/v3/quote/SPY,QQQ,DIA,AAPL,META,GOOG,AMZN,MCD,KO,VZ,MSFT,BA%20?apikey=8fbf4bf9dfd624c270732442735a23ff";
 const stockData = [];
 
 const getStocks = async () => {
@@ -37,6 +38,7 @@ router.post("/stocks", async (req, res) => {
     res.status(400).json({ message: "something went wrong" });
   }
 });
+
 //delete
 router.delete("/stocks/:id", async (req, res) => {
   try {
@@ -48,6 +50,7 @@ router.delete("/stocks/:id", async (req, res) => {
 
 // Update Route
 router.put("/stocks/:id", async (req, res) => {
+  console.log(req.body)
   try {
     res.status(200).json(
       await Stock.findByIdAndUpdate(req.params.id, req.body, { new: true })
