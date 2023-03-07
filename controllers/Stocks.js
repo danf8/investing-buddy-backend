@@ -13,7 +13,6 @@ const getStocks = async () => {
  stockData.push(data);
 }
 getStocks();
-console.log(stockData)
 
 router.get("/", (req, res) => {
   getStocks();
@@ -49,11 +48,10 @@ router.delete("/stocks/:id", async (req, res) => {
 
 // Update Route
 router.put("/stocks/:id", async (req, res) => {
-  console.log(req.body)
   try {
     res.status(200).json(
       await Stock.findByIdAndUpdate(req.params.id, {$push: {comments: req.body.comments}})
-    );
+      );
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
