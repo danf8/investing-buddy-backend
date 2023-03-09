@@ -16,7 +16,7 @@ const {getAuth} = require("firebase-admin/auth");
 require('dotenv').config();
 
 const {
-  PORT = 3001 , DATABASE_URL, GOOGLE_PRIVATE_ID, GOOGLE_PRIVATE_KEY, GOOGLE_CLIENT_ID
+  PORT, DATABASE_URL, GOOGLE_PRIVATE_ID, GOOGLE_PRIVATE_KEY, GOOGLE_CLIENT_ID
 } = process.env;
 
 admin.initializeApp({
@@ -77,8 +77,8 @@ function isAuthenticated(req, res, next) {
 ///////////////////////////////
 // Mount Routes
 ////////////////////////////////
-//app.use('/', isAuthenticated, stocksRouter);
-app.use('/', stocksRouter);
+app.use('/', isAuthenticated, stocksRouter);
+
 
 
 
@@ -87,6 +87,4 @@ app.use('/', stocksRouter);
 ///////////////////////////////
 // Tell the app to listen
 ////////////////////////////////
-app.listen(PORT, () => {
-  console.log(`Express is listening on port: ${PORT}`);
-});
+app.listen(process.env.PORT)
