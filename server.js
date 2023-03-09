@@ -16,7 +16,7 @@ const {getAuth} = require("firebase-admin/auth");
 require('dotenv').config();
 
 const {
-  PORT = 3001 , DATABASE_URL, GOOGLE_PRIVATE_ID, GOOGLE_PRIVATE_KEY, GOOGLE_CLIENT_ID
+  PORT = 3002 , DATABASE_URL, GOOGLE_PRIVATE_ID, GOOGLE_PRIVATE_KEY, GOOGLE_CLIENT_ID
 } = process.env;
 
 admin.initializeApp({
@@ -77,7 +77,7 @@ function isAuthenticated(req, res, next) {
 ///////////////////////////////
 // Mount Routes
 ////////////////////////////////
-//app.use('/', isAuthenticated, stocksRouter);
+// app.use('/', isAuthenticated, stocksRouter);
 app.use('/', stocksRouter);
 
 
