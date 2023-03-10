@@ -12,6 +12,7 @@ const getStocks = async () => {
   const data = await response.json();
   stockData = data
 }
+
 getStocks();
 
 router.get('/stocks/seed', (req, res) => {
