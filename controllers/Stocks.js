@@ -26,6 +26,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/stocks", async (req, res) => {
+  console.log('get route---', req.user)
   try {
     res.status(200).json(await Stock.find({}));
   } catch (error) {
@@ -52,6 +53,24 @@ router.delete("/stocks/:id", async (req, res) => {
 })
 
 // Update Route
+
+router.post('/stocks/update-prices', async (req, res) => {
+  console.log(getStocks());
+  console.log(stockData);
+  try {
+    for (const stock of stockData) {
+      await Stock.findOneAndUpdate(
+        { symbol: stock.symbol },
+        { $set: { price: stock.price } }
+      );
+    }
+    res.status(200).send('Prices updated successfully');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error updating prices');
+  }
+});
+
 router.put("/stocks/:id", async (req, res) => {
   try {
     res.status(200).json(
