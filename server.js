@@ -36,7 +36,7 @@ admin.initializeApp({
 
 
 const stocksRouter = require('./controllers/Stocks');
-
+const usersRouter = require('./controllers/Users');
 
 ///////////////////////////////
 // Database Connection
@@ -54,6 +54,7 @@ mongoose.connection
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(async function (req, res, next) {
   //capture token
   const token = req.get('Authorization');
@@ -78,7 +79,9 @@ function isAuthenticated(req, res, next) {
 // Mount Routes
 ////////////////////////////////
 
-app.use('/', isAuthenticated, stocksRouter);
+app.use('/', stocksRouter);
+app.use('/', usersRouter);
+//app.use('/', isAuthenticated, stocksRouter);
 
 
 
