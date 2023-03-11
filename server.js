@@ -78,7 +78,8 @@ function isAuthenticated(req, res, next) {
 // Mount Routes
 ////////////////////////////////
 
-app.use('/', isAuthenticated, stocksRouter);
+app.use('/', stocksRouter);
+//app.use('/', isAuthenticated, stocksRouter);
 
 
 
