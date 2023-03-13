@@ -10,7 +10,7 @@ let stockData;
 const getStocks = async () => {
   const response = await fetch(url);
   const data = await response.json();
-  stockData = data
+  stockData = data;
 }
 
 getStocks();
