@@ -10,6 +10,7 @@ const app = express();
 const Stock = require('./models/Stock.js')
 const admin = require('firebase-admin');
 const {getAuth} = require("firebase-admin/auth");
+
 ///////////////////////////////
 // Application Settings
 ////////////////////////////////
@@ -79,12 +80,8 @@ function isAuthenticated(req, res, next) {
 // Mount Routes
 ////////////////////////////////
 
-app.use('/', stocksRouter);
-app.use('/', usersRouter);
-//app.use('/', isAuthenticated, stocksRouter);
-
-
-
+//app.use('/', stocksRouter);
+app.use('/', isAuthenticated, stocksRouter);
 
 
 // create a test route
