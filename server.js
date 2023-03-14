@@ -68,6 +68,7 @@ app.use(async function (req, res, next) {
 })
 
 function isAuthenticated(req, res, next) {
+  console.log(req.user)
   if (!req.user) {
     return res.status(401).send('You must log in first');
   }
@@ -79,9 +80,9 @@ function isAuthenticated(req, res, next) {
 // Mount Routes
 ////////////////////////////////
 
-app.use('/', stocksRouter);
+// app.use('/', stocksRouter);
 app.use('/', usersRouter);
-//app.use('/', isAuthenticated, stocksRouter);
+app.use('/', isAuthenticated, stocksRouter);
 
 
 
