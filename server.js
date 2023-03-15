@@ -36,7 +36,7 @@ admin.initializeApp({
 
 
 const stocksRouter = require('./controllers/Stocks');
-
+const usersRouter = require('./controllers/Users');
 
 ///////////////////////////////
 // Database Connection
@@ -54,6 +54,7 @@ mongoose.connection
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(async function (req, res, next) {
   //capture token
   const token = req.get('Authorization');
@@ -67,6 +68,7 @@ app.use(async function (req, res, next) {
 })
 
 function isAuthenticated(req, res, next) {
+  console.log(req.user)
   if (!req.user) {
     return res.status(401).send('You must log in first');
   }
@@ -78,8 +80,9 @@ function isAuthenticated(req, res, next) {
 // Mount Routes
 ////////////////////////////////
 
-app.use('/', stocksRouter);
-//app.use('/', isAuthenticated, stocksRouter);
+// app.use('/', stocksRouter);
+app.use('/', usersRouter);
+app.use('/', isAuthenticated, stocksRouter);
 
 
 
