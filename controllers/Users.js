@@ -17,9 +17,6 @@ router.get("/", async (req, res) => {
 
 
 //handle signup form submission
-router.post("/signup", async (req, res) => {
-    console.log("Received a signup request");
-  });
 
 router.put("/user/:id", async (req, res) => {
   /*
@@ -46,8 +43,6 @@ router.put("/user/:id", async (req, res) => {
   }
 });
 
-router.get("/signin", async (req, res) => {
-    console.log("Received a signin request");
-  });
+
 
 module.exports = router;
