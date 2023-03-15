@@ -11,7 +11,6 @@ const getStocks = async () => {
   const response = await fetch(url);
   const data = await response.json();
   stockData = data
-  // stockData.push(data);
 }
 
 getStocks();
@@ -70,6 +69,9 @@ router.post('/stocks/update-prices', async (req, res) => {
     res.status(500).send('Error updating prices');
   }
 });
+
+
+
 
 router.put("/stocks/:id", async (req, res) => {
   try {
