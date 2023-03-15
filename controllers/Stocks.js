@@ -3,6 +3,7 @@ const router = express.Router();
 const fetch = require("node-fetch");
 const Stock = require('../models/Stock.js')
 const {API_KEY} = process.env;
+const StockIndex = require('../models/StockIndex.js');
 
 const indexURL = "https://financialmodelingprep.com/api/v3/historical-price-full/spy?serietype=line&apikey=" + API_KEY;
 const url = "https://financialmodelingprep.com/api/v3/quote/SPY,QQQ,DIA,AAPL,META,GOOG,AMZN,MCD,KO,VZ,MSFT,BA?apikey=" + API_KEY;
@@ -11,6 +12,7 @@ let stockIndexData;
 
 
 const getStocks = async () => {
+  const indexResponse = await fetch(indexURL)
   const response = await fetch(url);
   const data = await response.json();
   const indexData = await indexResponse.json()
