@@ -46,6 +46,13 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
-
+router.post("/users", async (req, res) => {
+  try {
+    await
+    res.status(200).json(await UserStocks.create(req.body));
+  } catch (error) {
+    res.status(400).json({ message: "something went wrong" });
+  }
+});
 
 module.exports = router;
