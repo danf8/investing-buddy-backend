@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const userStocks = new Schema({
     ownedStocks: [
         {
           type: Array
@@ -10,7 +10,10 @@ const userSchema = new Schema({
     currentMoney: {
         type: Number,
         required: true
+      },
+      uid: {
+        type: String
       }
     }, {timestamps: true});
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userStocks);
