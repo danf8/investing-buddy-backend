@@ -37,7 +37,7 @@ admin.initializeApp({
 
 const usersRouter = require('./controllers/Users');
 const stocksRouter = require('./controllers/Stocks');
-
+const userRouter = require('./controllers/Users');
 
 ///////////////////////////////
 // Database Connection
@@ -82,6 +82,7 @@ function isAuthenticated(req, res, next) {
 ////////////////////////////////
 app.use('/', usersRouter);
 //app.use('/', stocksRouter);
+app.use('/', userRouter);
 app.use('/', isAuthenticated, stocksRouter);
 
 
