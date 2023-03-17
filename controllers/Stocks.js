@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fetch = require("node-fetch");
 const Stock = require('../models/Stock.js')
+const StockIndex = require('../models/StockIndex.js');
 const {API_KEY} = process.env;
 
 const indexURL = "https://financialmodelingprep.com/api/v3/historical-price-full/spy?serietype=line&apikey=" + API_KEY;
@@ -34,7 +35,6 @@ router.get('/stocks/seed', (req, res) => {
 // });
 
 router.get("/stocks", async (req, res) => {
-  console.log('get route---', req.user)
   try {
     res.status(200).json(await Stock.find({}));
   } catch (error) {
