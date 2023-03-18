@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const router = express.Router();
 const StockIndex = require('../models/StockIndex.js');
@@ -14,6 +12,16 @@ router.get("/", async (req, res) => {
     res.status(400).json({ message: "something went wrong" });
   }
 });
+
+router.get("/userStocks/:id", async (req, res) => {
+  try {
+    res.status(200).json(await UserStocks.find({}));
+  } catch (error) {
+    res.status(400).json({ message: "something went wrong" });
+  }
+});
+
+
 
 
 //handle signup form submission
@@ -54,8 +62,13 @@ router.put("/users/:id", async (req, res) => {
 
 router.post("/users", async (req, res) => {
   try {
-    await
-    res.status(200).json(await UserStocks.create(req.body));
+    const user = await UserStocks.findOne({ uid: req.body.uid });
+    if (!user) {
+      // User does not exist, so create a new user
+      await UserStocks.create(req.body);
+    } else {
+      res.redirect("/stocks");
+    }
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
