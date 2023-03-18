@@ -81,9 +81,9 @@ function isAuthenticated(req, res, next) {
 // Mount Routes
 ////////////////////////////////
 app.use('/', usersRouter);
-//app.use('/', stocksRouter);
+app.use('/', stocksRouter);
 // app.use('/', userRouter);
-app.use('/', isAuthenticated, stocksRouter);
+//app.use('/', isAuthenticated, stocksRouter);
 
 
 // create a test route
