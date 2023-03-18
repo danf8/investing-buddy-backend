@@ -13,13 +13,13 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/userStocks/:id", async (req, res) => {
-  try {
-    res.status(200).json(await UserStocks.find({}));
-  } catch (error) {
-    res.status(400).json({ message: "something went wrong" });
-  }
-});
+// router.get("/userStocks/:id", async (req, res) => {
+//   try {
+//     res.status(200).json(await UserStocks.find({}));
+//   } catch (error) {
+//     res.status(400).json({ message: "something went wrong" });
+//   }
+// });
 
 
 
