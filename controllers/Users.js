@@ -28,20 +28,25 @@ router.put("/users/:id", async (req, res) => {
 
   console.log('hello')
   const stockToBuy =  await Stock.findOne({symbol: req.body.stockSymbol});
-  const userWallet = await userStocks.findOne({uid: req.user.uid});
+  const userWallet = await UserStocks.findOne({uid: req.user.uid});
+  console.log(userWallet)
   const purchasedStock = {
     stockToBuy,
     ownedShares: req.body.shareNum
   }
-  console.log(purchasedStock)
-  let newUserBalance = userWallet.currentMoney - (purchasedStock.price * purchasedStock.ownedShares);
+  console.log(+userWallet.currentMoney)
+  console.log(+purchasedStock.stockToBuy.price)
+  console.log(+purchasedStock.ownedShares)
+  const newUserBalance = (+userWallet.currentMoney) - (+purchasedStock.stockToBuy.price * +purchasedStock.ownedShares);
+  console.log(newUserBalance)
   //Now find user based req.user.id,
   //and push purchasedStock to user ownedStocks prop
   try {
     res.status(200).json(
       await UserStocks.findOneAndUpdate({uid: req.user.uid},
          {$push: {ownedStocks: purchasedStock}},
-         {$set: {currentMoney: newUserBalance }}));
+         {$set: {currentMoney: newUserBalance}}
+         ));
   } catch (error) {
       res.status(400).json({ message: "something went wrong" });
   }
