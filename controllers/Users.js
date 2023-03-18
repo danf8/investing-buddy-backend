@@ -28,12 +28,13 @@ router.put("/users/:id", async (req, res) => {
 
   console.log('hello')
   const stockToBuy =  await Stock.findOne({symbol: req.body.stockSymbol});
+  const userWallet = await userStocks.findOne({uid: req.user.uid});
   const purchasedStock = {
     stockToBuy,
     ownedShares: req.body.shareNum
   }
   console.log(purchasedStock)
-  let newUserBalance = req.user.currentMoney - (purchasedStock.price * purchasedStock.ownedShares);
+  let newUserBalance = userWallet.currentMoney - (purchasedStock.price * purchasedStock.ownedShares);
   //Now find user based req.user.id,
   //and push purchasedStock to user ownedStocks prop
   try {
