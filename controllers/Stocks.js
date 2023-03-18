@@ -5,6 +5,7 @@ const Stock = require('../models/Stock.js')
 const StockIndex = require('../models/StockIndex.js');
 const {API_KEY} = process.env;
 
+
 const indexURL = "https://financialmodelingprep.com/api/v3/historical-price-full/spy?serietype=line&apikey=" + API_KEY;
 const url = "https://financialmodelingprep.com/api/v3/quote/SPY,QQQ,DIA,AAPL,META,GOOG,AMZN,MCD,KO,VZ,MSFT,BA?apikey=" + API_KEY;
 let stockData;
@@ -12,10 +13,10 @@ let stockIndexData;
 
 
 const getStocks = async () => {
-  const indexResponse = await fetch(indexURL) 
+  const indexResponse = await fetch(indexURL)
   const response = await fetch(url);
   const data = await response.json();
-  const indexData = await indexResponse.json() 
+  const indexData = await indexResponse.json()
   stockData = data;
   stockIndexData = indexData;
 }
@@ -78,6 +79,9 @@ router.post('/stocks/update-prices', async (req, res) => {
     res.status(500).send('Error updating prices');
   }
 });
+
+
+
 
 router.put("/stocks/:id", async (req, res) => {
   try {
