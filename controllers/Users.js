@@ -28,7 +28,7 @@ router.put("/users/:id", async (req, res) => {
 
   console.log('hello')
   const stockToBuy =  await Stock.findOne({symbol: req.body.stockSymbol});
-  const userWallet = await userStocks.findOne({uid: req.user.uid});
+  const userWallet = await UserStocks.findOne({uid: req.user.uid});
   const purchasedStock = {
     stockToBuy,
     ownedShares: req.body.shareNum
