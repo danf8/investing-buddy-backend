@@ -3,6 +3,7 @@ const router = express.Router();
 const fetch = require("node-fetch");
 const Stock = require('../models/Stock.js')
 const StockIndex = require('../models/StockIndex.js');
+const UserStocks = require('../models/User')
 const {API_KEY} = process.env;
 
 
@@ -42,6 +43,16 @@ router.get("/stocks", async (req, res) => {
     res.status(400).json({ message: "something went wrong" });
   }
 });
+
+router.get("/stocks/user", async (req, res) => {
+  console.log(req.user)
+  try {
+    res.status(200).json(await UserStocks.find({uid: req.user.uid}));
+  } catch (error) {
+    res.status(400).json({ message: "something went wrong" });
+  }
+});
+
 //create
 router.post("/stocks", async (req, res) => {
   try {
