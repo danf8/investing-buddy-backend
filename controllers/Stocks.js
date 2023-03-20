@@ -37,6 +37,7 @@ router.get('/stocks/seed', (req, res) => {
 // });
 
 router.get("/stocks", async (req, res) => {
+  console.log(req.user)
   try {
     res.status(200).json(await Stock.find({}));
   } catch (error) {
@@ -44,14 +45,6 @@ router.get("/stocks", async (req, res) => {
   }
 });
 
-router.get("/stocks/user", async (req, res) => {
-  console.log(req.user)
-  try {
-    res.status(200).json(await UserStocks.find({uid: req.user.uid}));
-  } catch (error) {
-    res.status(400).json({ message: "something went wrong" });
-  }
-});
 
 //create
 router.post("/stocks", async (req, res) => {

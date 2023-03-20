@@ -13,17 +13,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/userStocks", async (req, res) => {
-  try {
-    res.status(200).json(await UserStocks.find({uid: req.user.uid}));
-  } catch (error) {
-    res.status(400).json({ message: "something went wrong" });
-  }
-});
-
-
-
-
 //handle signup form submission
 
 router.put("/users/:id", async (req, res) => {
@@ -43,8 +32,9 @@ router.put("/users/:id", async (req, res) => {
     ownedShares: req.body.shareNum
   }
   console.log(+userWallet.currentMoney)
-  console.log(+purchasedStock.stockToBuy.price)
-  console.log(+purchasedStock.ownedShares)
+
+  console.log(+purchasedStock.stockToBuy.price * +purchasedStock.ownedShares)
+
   const newUserBalance = (+userWallet.currentMoney) - (+purchasedStock.stockToBuy.price * +purchasedStock.ownedShares);
   console.log(newUserBalance)
   //Now find user based req.user.id,
@@ -52,12 +42,15 @@ router.put("/users/:id", async (req, res) => {
   try {
     res.status(200).json(
       await UserStocks.findOneAndUpdate({uid: req.user.uid},
-         {$push: {ownedStocks: purchasedStock}},
-         {$set: {currentMoney: newUserBalance}}
+         {
+          $set: {currentMoney: newUserBalance},
+          $push: {ownedStocks: purchasedStock}
+        }
          ));
   } catch (error) {
       res.status(400).json({ message: "something went wrong" });
   }
+
 });
 
 router.post("/users", async (req, res) => {
@@ -69,6 +62,14 @@ router.post("/users", async (req, res) => {
     } else {
       res.redirect("/stocks");
     }
+  } catch (error) {
+    res.status(400).json({ message: "something went wrong" });
+  }
+});
+
+router.get("/userStocks/:id", async (req, res) => {
+  try {
+    res.status(200).json(await UserStocks.findOne({uid: req.params.id}));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
