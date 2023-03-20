@@ -15,9 +15,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/userStocks/:id", async (req, res) => {
+router.get("/userStocks", async (req, res) => {
   try {
-    res.status(200).json(await UserStocks.find({}));
+    res.status(200).json(await UserStocks.find({uid: req.user.uid}));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
