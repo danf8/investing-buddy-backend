@@ -1,9 +1,11 @@
 const express = require('express');
+var cors = require('cors')
 const router = express.Router();
 const StockIndex = require('../models/StockIndex.js');
 const fetch = require("node-fetch");
 const Stock = require('../models/Stock')
 const UserStocks = require('../models/User')
+router.use(cors())
 //provides stock index data for homepage
 router.get("/", async (req, res) => {
   try {
@@ -55,13 +57,8 @@ router.put("/users/:id", async (req, res) => {
 
 router.post("/users", async (req, res) => {
   try {
-    const user = await UserStocks.findOne({ uid: req.body.uid });
-    if (!user) {
-      // User does not exist, so create a new user
-      await UserStocks.create(req.body);
-    } else {
-      res.redirect("/stocks");
-    }
+    await
+    res.status(200).json(await UserStocks.create(req.body));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
