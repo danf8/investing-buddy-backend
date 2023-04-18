@@ -15,22 +15,20 @@ router.get("/", async (req, res) => {
   }
 });
 
-//handle signup form submission
 router.put("/users/:id", async (req, res) => {
-  const stockToBuy =  await Stock.findOne({symbol: req.body.stockSymbol});
+
   const userWallet = await UserStocks.findOne({uid: req.user.uid});
 
   const stockPurchased = {
-    name: stockToBuy.name,
-    price: stockToBuy.price,
-    symbol: stockToBuy.symbol,
+    name: req.body.name,
+    price: req.body.price,
+    symbol: req.body.symbol,
   };
 
   const purchasedStock = {
     stockPurchased,
-    ownedShares: req.body.shareNum
+    ownedShares: req.body.amountOwned
   };
-
   const newUserBalance = (+userWallet.currentMoney) - (+purchasedStock.stockPurchased.price * +purchasedStock.ownedShares);
   try {
     res.status(200).json(
@@ -45,9 +43,10 @@ router.put("/users/:id", async (req, res) => {
   }
 });
 
+//creates user on mongodb from firebase
 router.post("/users", async (req, res) => {
   try {
-    await
+    req.body.uid = req.user.uid
     res.status(200).json(await UserStocks.create(req.body));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
@@ -61,5 +60,6 @@ router.get("/userStocks/:id", async (req, res) => {
     res.status(400).json({ message: "something went wrong" });
   }
 });
+
 
 module.exports = router;

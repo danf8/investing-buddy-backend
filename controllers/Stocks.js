@@ -23,21 +23,16 @@ const getStocks = async () => {
 }
 
 getStocks();
-
+// seeds database
 router.get('/stocks/seed', (req, res) => {
-  getStocks()
-  console.log(stockIndexData)
-  Stock.create(stockData)
-  StockIndex.create(stockIndexData)
-  res.send('seeded')
+  getStocks();
+  Stock.create(stockData);
+  StockIndex.create(stockIndexData);
+  res.send('seeded');
 });
 
-// router.get("/", (req, res) => {
-//   res.send('hello investing world');
-// });
-
+// shows stock index 
 router.get("/stocks", async (req, res) => {
-  console.log(req.user)
   try {
     res.status(200).json(await Stock.find({}));
   } catch (error) {
@@ -49,7 +44,6 @@ router.get("/stocks", async (req, res) => {
 //create
 router.post("/stocks", async (req, res) => {
   try {
-    await
     res.status(200).json(await Stock.create(req.body));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
@@ -66,10 +60,7 @@ router.delete("/stocks/:id", async (req, res) => {
 })
 
 // Update Route
-
 router.post('/stocks/update-prices', async (req, res) => {
-  console.log(getStocks());
-  console.log(stockData);
   try {
     for (const stock of stockData) {
       await Stock.findOneAndUpdate(
@@ -84,9 +75,7 @@ router.post('/stocks/update-prices', async (req, res) => {
   }
 });
 
-
-
-
+// add comments to individual stock
 router.put("/stocks/:id", async (req, res) => {
   try {
     res.status(200).json(
@@ -97,8 +86,8 @@ router.put("/stocks/:id", async (req, res) => {
   }
 });
 
+// show stock page
 router.get("/stocks/:id", async (req, res) => {
-  console.log('test')
   try {
     res.status(200).json(await Stock.findById(req.params.id));
   } catch (error) {
