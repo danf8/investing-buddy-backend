@@ -11,8 +11,12 @@ const userStocks = new Schema({
         type: Number,
         required: true
       },
+      startingMoney: {
+        type: Number,
+        required: true,
+      },
       uid: {
-        type: String
+        type: String,
       }
     }, {timestamps: true});
 

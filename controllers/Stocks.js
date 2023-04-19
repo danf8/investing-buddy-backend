@@ -21,7 +21,6 @@ const getStocks = async () => {
   stockData = data;
   stockIndexData = indexData;
 }
-
 getStocks();
 // seeds database
 router.get('/stocks/seed', (req, res) => {
@@ -39,7 +38,6 @@ router.get("/stocks", async (req, res) => {
     res.status(400).json({ message: "something went wrong" });
   }
 });
-
 
 //create
 router.post("/stocks", async (req, res) => {
@@ -61,6 +59,7 @@ router.delete("/stocks/:id", async (req, res) => {
 
 // Update Route
 router.post('/stocks/update-prices', async (req, res) => {
+  getStocks();
   try {
     for (const stock of stockData) {
       await Stock.findOneAndUpdate(
@@ -94,6 +93,5 @@ router.get("/stocks/:id", async (req, res) => {
     res.status(400).json({ message: "something went wrong" });
   }
 });
-
 
 module.exports = router;
