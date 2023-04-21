@@ -6,12 +6,10 @@ const StockIndex = require('../models/StockIndex.js');
 const UserStocks = require('../models/User')
 const {API_KEY} = process.env;
 
-
 const indexURL = "https://financialmodelingprep.com/api/v3/historical-price-full/spy?serietype=line&apikey=" + API_KEY;
 const url = "https://financialmodelingprep.com/api/v3/quote/SPY,QQQ,DIA,AAPL,META,GOOG,AMZN,MCD,KO,VZ,MSFT,BA?apikey=" + API_KEY;
 let stockData;
 let stockIndexData;
-
 
 const getStocks = async () => {
   const indexResponse = await fetch(indexURL)
@@ -20,7 +18,8 @@ const getStocks = async () => {
   const indexData = await indexResponse.json()
   stockData = data;
   stockIndexData = indexData;
-}
+};
+
 getStocks();
 // seeds database
 router.get('/stocks/seed', (req, res) => {
@@ -32,6 +31,7 @@ router.get('/stocks/seed', (req, res) => {
 
 // shows stock index 
 router.get("/stocks", async (req, res) => {
+  console.log('2')
   try {
     res.status(200).json(await Stock.find({}));
   } catch (error) {
@@ -61,6 +61,7 @@ router.delete("/stocks/:id", async (req, res) => {
 router.post('/stocks/update-prices', async (req, res) => {
   getStocks();
   try {
+    console.log(stockData)
     for (const stock of stockData) {
       await Stock.findOneAndUpdate(
         { symbol: stock.symbol },

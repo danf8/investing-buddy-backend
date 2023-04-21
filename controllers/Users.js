@@ -15,27 +15,43 @@ router.get("/", async (req, res) => {
   }
 });
 
+//update user stock current prices
+router.put("/user/update/:id", async (req, res) => {
+  try {
+    const userInfo = await UserStocks.findOne({ uid: req.params.id });
+    const stockSymbols = userInfo.ownedStocks.map(stock => stock.symbol);
+    const stockPrices = await Stock.find({ symbol: { $in: stockSymbols } }, { _id: 0, symbol: 1, price: 1 });
+    const priceMap = {};
+    for (const stockPrice of stockPrices) {
+      priceMap[stockPrice.symbol] = stockPrice.price;
+    }
+    const updates = userInfo.ownedStocks.map(stock => {
+      return {
+        updateOne: {
+          filter: { 'ownedStocks.symbol': stock.symbol },
+          update: { $set: { 'ownedStocks.$.currentPrice': priceMap[stock.symbol] }  }, 
+        }, 
+      };
+    });
+    await UserStocks.bulkWrite(updates);
+    res.status(200).json({ message: "User stocks updated successfully" });
+    // res.status(200).json(await UserStocks.bulkWrite(updates));
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Something went wrong" });
+  }
+});
+
+
 router.put("/users/:id", async (req, res) => {
-
   const userWallet = await UserStocks.findOne({uid: req.user.uid});
-
-  const stockPurchased = {
-    name: req.body.name,
-    price: req.body.price,
-    symbol: req.body.symbol,
-  };
-
-  const purchasedStock = {
-    stockPurchased,
-    ownedShares: req.body.amountOwned
-  };
-  const newUserBalance = (+userWallet.currentMoney) - (+purchasedStock.stockPurchased.price * +purchasedStock.ownedShares);
+  const newUserBalance = (+userWallet.currentMoney) - (+req.body.price * +req.body.ownedShares);
   try {
     res.status(200).json(
       await UserStocks.findOneAndUpdate({uid: req.user.uid},
          {
           $set: {currentMoney: newUserBalance},
-          $push: {ownedStocks: purchasedStock}
+          $push: {ownedStocks: req.body}
         }
          ));
   } catch (error) {
@@ -54,6 +70,7 @@ router.post("/users", async (req, res) => {
 });
 
 router.get("/userStocks/:id", async (req, res) => {
+  console.log('1')
   try {
     res.status(200).json(await UserStocks.findOne({uid: req.params.id}));
   } catch (error) {
