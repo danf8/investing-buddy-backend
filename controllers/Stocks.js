@@ -31,7 +31,6 @@ router.get('/stocks/seed', (req, res) => {
 
 // shows stock index 
 router.get("/stocks", async (req, res) => {
-  console.log('2')
   try {
     res.status(200).json(await Stock.find({}));
   } catch (error) {
@@ -77,7 +76,7 @@ router.post('/stocks/update-prices', async (req, res) => {
 router.put("/stocks/:id", async (req, res) => {
   try {
     res.status(200).json(
-      await Stock.findByIdAndUpdate(req.params.id, {$push: {comments: req.body.comments}})
+      await Stock.findOneAndUpdate({symbol: req.params.id}, {$push: {comments: req.body.comments}})
       );
   } catch (error) {
       res.status(400).json({ message: "something went wrong" });
