@@ -69,6 +69,26 @@ router.put("/users/:id", async (req, res) => {
   };
 });
 
+router.put("/user/form/sell/:id", async (req, res) => {
+  try{
+    const userWallet = await UserStocks.findOne({uid: req.user.uid})
+    const stockToSell = userWallet.ownedStocks.find(stock => stock.symbol === req.body.symbol);
+    const remainingShares = stockToSell.ownedShares - req.body.soldShares;
+    const moneyEarned = req.body.currentPrice * req.body.soldShares;
+    
+    res.status(200).json(await UserStocks.findOneAndUpdate(
+      { uid: req.user.uid, 'ownedStocks.symbol': req.body.symbol },
+      {
+        $set: { 'ownedStocks.$.ownedShares': remainingShares },
+        $inc: { currentMoney: moneyEarned }
+      },
+    ));
+    
+  }catch(error) {
+    res.status(400).json({ message: "something went wrong" });
+  }
+})
+
 //creates user on mongodb from firebase
 router.post("/users", async (req, res) => {
   try {
