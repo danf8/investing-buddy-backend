@@ -20,7 +20,7 @@ router.put("/user/update/:id", async (req, res) => {
   try {
     const userInfo = await UserStocks.findOne({ uid: req.params.id });
     const stockSymbols = userInfo.ownedStocks.map(stock => stock.symbol);
-    const stockPrices = await Stock.find({ symbol: { $in: stockSymbols } }, { _id: 0, symbol: 1, price: 1 });
+    const stockPrices = await Stock.find({ symbol: { $in: stockSymbols} }, { _id: 0, symbol: 1, price: 1 });
     const priceMap = {};
     for (const stockPrice of stockPrices) {
       priceMap[stockPrice.symbol] = stockPrice.price;
@@ -33,30 +33,40 @@ router.put("/user/update/:id", async (req, res) => {
         }, 
       };
     });
-    await UserStocks.bulkWrite(updates);
-    res.status(200).json({ message: "User stocks updated successfully" });
-    // res.status(200).json(await UserStocks.bulkWrite(updates));
+    res.status(200).json(await UserStocks.bulkWrite(updates));
   } catch (error) {
-    console.log(error);
     res.status(400).json({ message: "Something went wrong" });
   }
 });
 
-
+// update users stocks if user already owns stock will update amount and price
 router.put("/users/:id", async (req, res) => {
+  try {
   const userWallet = await UserStocks.findOne({uid: req.user.uid});
   const newUserBalance = (+userWallet.currentMoney) - (+req.body.price * +req.body.ownedShares);
-  try {
-    res.status(200).json(
-      await UserStocks.findOneAndUpdate({uid: req.user.uid},
-         {
-          $set: {currentMoney: newUserBalance},
-          $push: {ownedStocks: req.body}
-        }
-         ));
+  const existingStockIndex = userWallet.ownedStocks.findIndex((stock) => stock.symbol === req.body.symbol);
+  if(existingStockIndex !== -1){
+    const existingStock = userWallet.ownedStocks[existingStockIndex];
+    const newTotalShares = existingStock.ownedShares + req.body.ownedShares;
+    const newAveragePrice = (existingStock.ownedShares * existingStock.price + req.body.ownedShares * +req.body.price) / newTotalShares;
+    req.body.ownedShares = newTotalShares;
+    req.body.price = newAveragePrice;
+    res.status(200).json(await UserStocks.findOneAndUpdate({ uid: req.user.uid, 'ownedStocks.symbol': req.body.symbol },{
+      $set: {
+        'ownedStocks.$.ownedShares': req.body.ownedShares,
+        'ownedStocks.$.price': req.body.price,
+      },
+      $inc: { currentMoney: -req.body.price * req.body.ownedShares },
+    }));
+  } else {
+    res.status(200).json(await UserStocks.findOneAndUpdate({uid: req.user.uid},{
+      $set: {currentMoney: newUserBalance},
+      $push: {ownedStocks: req.body}
+    }));
+  };
   } catch (error) {
       res.status(400).json({ message: "something went wrong" });
-  }
+  };
 });
 
 //creates user on mongodb from firebase
@@ -70,13 +80,11 @@ router.post("/users", async (req, res) => {
 });
 
 router.get("/userStocks/:id", async (req, res) => {
-  console.log('1')
   try {
     res.status(200).json(await UserStocks.findOne({uid: req.params.id}));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
 });
-
 
 module.exports = router;

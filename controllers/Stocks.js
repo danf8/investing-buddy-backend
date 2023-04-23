@@ -61,7 +61,6 @@ router.delete("/stocks/:id", async (req, res) => {
 router.post('/stocks/update-prices', async (req, res) => {
   getStocks();
   try {
-    console.log(stockData)
     for (const stock of stockData) {
       await Stock.findOneAndUpdate(
         { symbol: stock.symbol },
@@ -70,7 +69,6 @@ router.post('/stocks/update-prices', async (req, res) => {
     }
     res.status(200).send('Prices updated successfully');
   } catch (err) {
-    console.error(err);
     res.status(500).send('Error updating prices');
   }
 });
