@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
 const express = require('express');
+
 // create application object
 const app = express();
 const Stock = require('./models/Stock.js');
@@ -37,7 +38,8 @@ admin.initializeApp({
 
 const usersRouter = require('./controllers/Users');
 const stocksRouter = require('./controllers/Stocks');
-// const userRouter = require('./controllers/Users');
+const cronJobs = require('./controllers/cronJobs.js')
+
 
 ///////////////////////////////
 // Database Connection
@@ -69,7 +71,6 @@ app.use(async function (req, res, next) {
 })
 
 function isAuthenticated(req, res, next) {
-  console.log(req.user)
   if (!req.user) {
     return res.status(401).send('You must log in first');
   }
@@ -81,9 +82,9 @@ function isAuthenticated(req, res, next) {
 // Mount Routes
 ////////////////////////////////
 app.use('/', usersRouter);
-app.use('/', stocksRouter);
+// app.use('/', stocksRouter);
 // app.use('/', userRouter);
-//app.use('/', isAuthenticated, stocksRouter);
+app.use('/', isAuthenticated, stocksRouter);
 
 
 // create a test route
