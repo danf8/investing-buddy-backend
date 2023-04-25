@@ -5,20 +5,29 @@ const Stock = require('../models/Stock.js')
 const StockIndex = require('../models/StockIndex.js');
 const UserStocks = require('../models/User')
 const {API_KEY} = process.env;
+let combineString;
 
-const indexURL = "https://financialmodelingprep.com/api/v3/historical-price-full/SPY?serietype=line&timeseries=90&apikey=" + API_KEY;
-const url = "https://financialmodelingprep.com/api/v3/quote/SPY,QQQ,DIA,AAPL,META,GOOG,AMZN,MCD,KO,VZ,MSFT,BA?apikey=" + API_KEY;
-const stockUrlHistorical = "https://financialmodelingprep.com/api/v3/historical-price-full/VZ,MSFT,BA?serietype=line&timeseries=60&apikey=" + API_KEY;
+let url = '';
+
 let stockData;
 let stockIndexData;
-let stockHistorical;
 
+const updateString = async() => {
+  let symbolString =[]
+  const stocks = await Stock.find();
+  for(const stock of stocks){
+    symbolString.push(stock.symbol)
+  }
+  combineString = symbolString.join();
+  url = `https://financialmodelingprep.com/api/v3/quote/${combineString}?apikey=` + API_KEY;
+  getStocks()
+}
 const getStocks = async () => {
   const response = await fetch(url);
   const data = await response.json();
   stockData = data; 
-};
-// getStocks();
+}; 
+
 // seeds database
 router.get('/stocks/seed', async (req, res) => {
   getStocks();
@@ -26,7 +35,6 @@ router.get('/stocks/seed', async (req, res) => {
   StockIndex.create(stockIndexData);
   res.send('seeded');
 });
-
 // shows stock index 
 router.get("/stocks", async (req, res) => {
   try {
@@ -36,6 +44,23 @@ router.get("/stocks", async (req, res) => {
   }
 });
 
+router.get('/stocks/search/stock/:id', async (req, res) => {
+  const searchURL = `https://financialmodelingprep.com/api/v3/quote/${req.params.id.toUpperCase()}?apikey=` + API_KEY;
+  const searchHistoricalURL = `https://financialmodelingprep.com/api/v3/historical-price-full/${req.params.id.toUpperCase()}?serietype=line&timeseries=60&apikey=` + API_KEY;
+  const historicalResponse = await fetch(searchHistoricalURL)
+  const searchResponse = await fetch(searchURL);
+  const historicalData = await historicalResponse.json()
+  const searchData = await searchResponse.json();
+  try {
+    await Stock.create(searchData);
+    await Stock.updateOne({symbol: historicalData.symbol},{$set: {historical: historicalData.historical.reverse()}});
+    res.status(200).json(await Stock.find({}));
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: "something went wrong" });
+  }
+}); 
+ 
 //create
 router.post("/stocks", async (req, res) => {
   try {
@@ -52,10 +77,11 @@ router.delete("/stocks/:id", async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }
-})
+});
 
 // Update Route
 router.post('/stocks/update-prices', async (req, res) => {
+  updateString();
   const response = await fetch(url);
   const data = await response.json();
   stockData = data;
