@@ -10,10 +10,10 @@ const stockSchema = new Schema ({
   eps: Number,
   pe: Number,
   comments: Array,
-  historical: {
+  historical: [{
     date: String,
     close: Number,
-  },
+  }],
 });
 
 

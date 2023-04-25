@@ -14,21 +14,9 @@ let stockIndexData;
 let stockHistorical;
 
 const getStocks = async () => {
-  const stockHistoricalData = await fetch(stockUrlHistorical)
-  const indexResponse = await fetch(indexURL)
   const response = await fetch(url);
   const data = await response.json();
-  const indexData = await indexResponse.json()
-  const historicalData = await stockHistoricalData.json()
-  stockData = data;
-  stockIndexData = indexData;
-  stockIndexData.historical.reverse()
-  // await StockIndex.create(stockIndexData);
-  stockHistorical = historicalData
-  // for(const stock of stockHistorical.historicalStockList){
-  //   await Stock.findOneAndUpdate({symbol: stock.symbol}, {$set: {historical: stock.historical.reverse()}}
-  //     );
-  //  }
+  stockData = data; 
 };
 // getStocks();
 // seeds database

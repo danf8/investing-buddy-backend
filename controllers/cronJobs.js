@@ -1,5 +1,5 @@
 const User = require('../models/User');
-// const Stock = require('../models/Stock.js')
+const Stock = require('../models/Stock.js');
 
 const CronJob = require('cron').CronJob;
 
@@ -11,6 +11,7 @@ const job = new CronJob('0 * * * *', async () => {
     const estTime = (utcTime - 4);
     if(estTime === 17){
       const users = await User.find();
+      const stocks = await Stock.find();
       for(const user of users) {
         const totalValue = user.totalInvestmentValue + user.currentMoney;
         const performance = user.performance || { historical: [] };
@@ -20,12 +21,15 @@ const job = new CronJob('0 * * * *', async () => {
         });
         await User.updateOne({ _id: user._id }, { $set: { performance } });
       };
+      for(const stock of stocks){
+        const historical = stock.historical;
+        historical.push({
+          date: currentDate,
+          close: stock.price
+        });
+      await Stock.updateOne({symbol: stock.symbol}, {$set: {historical}});
+    };
     };
   });
 
-  job.start()
-
-
-
-  // date
-  // close
+  job.start();
