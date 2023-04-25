@@ -21,6 +21,7 @@ router.get("/", async (req, res) => {
 
 //update user stock to current prices on login
 router.put("/user/update/:id", async (req, res) => {
+  console.log('here')
   try {
     const userInfo = await UserStocks.findOne({ uid: req.params.id });
     if(userInfo.ownedStocks){

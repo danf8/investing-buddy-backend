@@ -6,23 +6,33 @@ const StockIndex = require('../models/StockIndex.js');
 const UserStocks = require('../models/User')
 const {API_KEY} = process.env;
 
-const indexURL = "https://financialmodelingprep.com/api/v3/historical-price-full/spy?serietype=line&apikey=" + API_KEY;
+const indexURL = "https://financialmodelingprep.com/api/v3/historical-price-full/SPY?serietype=line&timeseries=90&apikey=" + API_KEY;
 const url = "https://financialmodelingprep.com/api/v3/quote/SPY,QQQ,DIA,AAPL,META,GOOG,AMZN,MCD,KO,VZ,MSFT,BA?apikey=" + API_KEY;
+const stockUrlHistorical = "https://financialmodelingprep.com/api/v3/historical-price-full/VZ,MSFT,BA?serietype=line&timeseries=60&apikey=" + API_KEY;
 let stockData;
 let stockIndexData;
+let stockHistorical;
 
 const getStocks = async () => {
+  const stockHistoricalData = await fetch(stockUrlHistorical)
   const indexResponse = await fetch(indexURL)
   const response = await fetch(url);
   const data = await response.json();
   const indexData = await indexResponse.json()
+  const historicalData = await stockHistoricalData.json()
   stockData = data;
   stockIndexData = indexData;
+  stockIndexData.historical.reverse()
+  // await StockIndex.create(stockIndexData);
+  stockHistorical = historicalData
+  // for(const stock of stockHistorical.historicalStockList){
+  //   await Stock.findOneAndUpdate({symbol: stock.symbol}, {$set: {historical: stock.historical.reverse()}}
+  //     );
+  //  }
 };
-
-getStocks();
+// getStocks();
 // seeds database
-router.get('/stocks/seed', (req, res) => {
+router.get('/stocks/seed', async (req, res) => {
   getStocks();
   Stock.create(stockData);
   StockIndex.create(stockIndexData);
@@ -58,7 +68,9 @@ router.delete("/stocks/:id", async (req, res) => {
 
 // Update Route
 router.post('/stocks/update-prices', async (req, res) => {
-  getStocks();
+  const response = await fetch(url);
+  const data = await response.json();
+  stockData = data;
   try {
     for (const stock of stockData) {
       await Stock.findOneAndUpdate(
@@ -86,7 +98,7 @@ router.put("/stocks/:id", async (req, res) => {
 // show stock page
 router.get("/stocks/:id", async (req, res) => {
   try {
-    res.status(200).json(await Stock.findById(req.params.id));
+    res.status(200).json(await Stock.findOne({symbol: req.params.id}));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
   }

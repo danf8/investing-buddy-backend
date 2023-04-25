@@ -1,4 +1,6 @@
-const User = require('../models/User')
+const User = require('../models/User');
+// const Stock = require('../models/Stock.js')
+
 const CronJob = require('cron').CronJob;
 
 // Update each user's performance
@@ -22,3 +24,8 @@ const job = new CronJob('0 * * * *', async () => {
   });
 
   job.start()
+
+
+
+  // date
+  // close
