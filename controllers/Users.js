@@ -1,13 +1,10 @@
 const express = require('express');
-var cors = require('cors')
+var cors = require('cors');
 const router = express.Router();
 const StockIndex = require('../models/StockIndex.js');
-const fetch = require("node-fetch");
-const Stock = require('../models/Stock')
-const UserStocks = require('../models/User')
-router.use(cors())
-
-
+const Stock = require('../models/Stock');
+const UserStocks = require('../models/User');
+router.use(cors());
 
 //provides stock index data for homepage
 router.get("/", async (req, res) => {
@@ -15,13 +12,11 @@ router.get("/", async (req, res) => {
     res.status(200).json(await StockIndex.find({}));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
-  }
+  };
 });
-
 
 //update user stock to current prices on login
 router.put("/user/update/:id", async (req, res) => {
-  console.log('here')
   try {
     const userInfo = await UserStocks.findOne({ uid: req.params.id });
     if(userInfo.ownedStocks){
@@ -50,7 +45,7 @@ router.put("/user/update/:id", async (req, res) => {
     // res.status(200).json({ message: "Something went wrong" });
   } catch (error) {
     // res.status(400).json({ message: "Something went wrong" });
-  }
+  };
 });
 
 // update users stocks if user already owns stock will update amount and price
@@ -89,7 +84,7 @@ router.put("/users/:id", async (req, res) => {
 //updates user stocks and currentMoney when stock is sold
 router.put("/user/form/sell/:id", async (req, res) => {
   try {
-    const userWallet = await UserStocks.findOne({uid: req.user.uid})
+    const userWallet = await UserStocks.findOne({uid: req.user.uid});
     const stockToSell = userWallet.ownedStocks.find(stock => stock.symbol === req.body.symbol);
     const remainingShares = stockToSell.ownedShares - req.body.soldShares;
     const moneyEarned = req.body.currentPrice * req.body.soldShares;
@@ -110,11 +105,11 @@ router.put("/user/form/sell/:id", async (req, res) => {
 //creates user on mongodb from firebase
 router.post("/users", async (req, res) => {
   try {
-    req.body.uid = req.user.uid
+    req.body.uid = req.user.uid;
     res.status(200).json(await UserStocks.create(req.body));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
-  }
+  };
 });
 
 router.get("/userStocks/:id", async (req, res) => {
@@ -122,7 +117,7 @@ router.get("/userStocks/:id", async (req, res) => {
     res.status(200).json(await UserStocks.findOne({uid: req.params.id}));
   } catch (error) {
     res.status(400).json({ message: "something went wrong" });
-  }
+  };
 });
 
 module.exports = router;

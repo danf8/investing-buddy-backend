@@ -17,16 +17,27 @@ const trackPortfolio = new Schema({
 });
 
 const userStocks = new Schema({
-    totalInvestmentValue: {type: Number},
+    totalInvestmentValue: {
+      type: Number,
+      set: (value) => {
+        return Math.round(value * 100) / 100;
+      }
+    },
     ownedStocks: [stockPurchased],
     performance: trackPortfolio,
     currentMoney: {
         type: Number,
-        required: true
+        required: true,
+        set: (value) => {
+          return Math.round(value * 100) / 100;
+        }
       },
       startingMoney: {
         type: Number,
         required: true,
+        set: (value) => {
+          return Math.round(value * 100) / 100;
+        }
       },
       uid: {
         type: String,

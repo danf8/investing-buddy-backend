@@ -38,7 +38,7 @@ admin.initializeApp({
 
 const usersRouter = require('./controllers/Users');
 const stocksRouter = require('./controllers/Stocks');
-const cronJobs = require('./controllers/cronJobs.js')
+const cronJobs = require('./controllers/cronJobs.js');
 
 
 ///////////////////////////////

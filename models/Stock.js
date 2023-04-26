@@ -5,16 +5,25 @@ const stockSchema = new Schema ({
   symbol: String,
   name: String,
   price: String,
-  changesPercentage: Number,
+  changesPercentage: { type: Number,       
+    set: (value) => {
+    return Math.round(value * 100) / 100;
+  }},
   marketCap: Number,
-  eps: Number,
-  pe: Number,
+  eps: {type: Number,       
+    set: (value) => {
+    return Math.round(value * 100) / 100;
+  }},
+  pe: {type: Number, 
+    set: (value) => {
+      return Math.round(value * 100) / 100;
+    }
+  },
   comments: Array,
   historical: [{
     date: String,
     close: Number,
   }],
 });
-
 
 module.exports = mongoose.model('Stock', stockSchema);
